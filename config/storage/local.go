@@ -1,0 +1,25 @@
+package storage
+
+import "os"
+
+type SQLiteConfig struct {
+	FilePath string `json:"file_path"`
+}
+
+func DefaultSQLiteConfig() SQLiteConfig {
+	var defaultPath string
+	dir, err := os.UserConfigDir()
+	if err != nil {
+		defaultPath = "."
+	} else {
+		defaultPath = dir
+	}
+	defaultPath = defaultPath + string(os.PathSeparator) + "todo_app"
+	if _, err := os.Stat(defaultPath); os.IsNotExist(err) {
+		os.MkdirAll(defaultPath, os.ModePerm)
+	}
+	defaultPath = defaultPath + string(os.PathSeparator) + "local.db"
+	return SQLiteConfig{
+		FilePath: defaultPath,
+	}
+}

@@ -1,0 +1,232 @@
+/* StorageIllustration.css */
+
+.storage-illustration-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.storage-illustration {
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+/* Phone Device */
+.phone-device {
+  position: absolute;
+  right: 30px;
+  top: 50px;
+  width: 180px;
+  height: 280px;
+  background: #4c63d2;
+  border-radius: 25px;
+  box-shadow: 0 10px 30px rgba(76, 99, 210, 0.3);
+  z-index: 2;
+}
+
+.phone-screen {
+  margin: 15px;
+  height: calc(100% - 30px);
+  background: white;
+  border-radius: 15px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.check-icon {
+  width: 50px;
+  height: 50px;
+  background: #10b981;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-bottom: 20px;
+  animation: checkPulse 2s ease-in-out infinite;
+}
+
+@keyframes checkPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.credit-card {
+  width: 120px;
+  height: 75px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-stripe {
+  width: 100%;
+  height: 15px;
+  background: #2d3748;
+  margin-top: 15px;
+}
+
+.card-details {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: calc(100% - 30px);
+}
+
+.card-chip {
+  width: 20px;
+  height: 15px;
+  background: #ffd700;
+  border-radius: 3px;
+}
+
+.card-number {
+  width: 60px;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+}
+
+.phone-button {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 4px;
+  background: #d1d5db;
+  border-radius: 2px;
+}
+
+/* Person */
+.person-storage {
+  position: absolute;
+  left: 20px;
+  bottom: 30px;
+  z-index: 1;
+}
+
+.person-head-storage {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #4c63d2;
+  position: relative;
+  margin-bottom: 5px;
+}
+
+.person-head-storage::after {
+  content: '';
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  width: 20px;
+  height: 20px;
+  background: #8b5cf6;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+}
+
+.person-body-storage {
+  width: 55px;
+  height: 75px;
+  background: white;
+  border-radius: 27px 27px 15px 15px;
+  position: relative;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.person-arm-storage {
+  position: absolute;
+  top: 15px;
+  right: -20px;
+  width: 25px;
+  height: 35px;
+  background: #f59e0b;
+  border-radius: 12px;
+  transform: rotate(45deg);
+  box-shadow: 0 3px 10px rgba(245, 158, 11, 0.3);
+}
+
+/* Floating Shapes */
+.floating-shapes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: float 3s ease-in-out infinite;
+}
+
+.shape-1 {
+  width: 20px;
+  height: 20px;
+  background: #f59e0b;
+  top: 20px;
+  left: 50px;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 15px;
+  height: 15px;
+  background: #10b981;
+  top: 80px;
+  right: 20px;
+  animation-delay: 1s;
+}
+
+.shape-3 {
+  width: 25px;
+  height: 25px;
+  background: #8b5cf6;
+  bottom: 40px;
+  left: 80px;
+  animation-delay: 2s;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .storage-illustration {
+    width: 250px;
+    height: 250px;
+  }
+  
+  .phone-device {
+    width: 150px;
+    height: 230px;
+    right: 20px;
+  }
+  
+  .person-storage {
+    left: 15px;
+    bottom: 25px;
+  }
+}
