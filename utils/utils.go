@@ -10,3 +10,16 @@ func DsnFromParams(host string, port int, username, password, dbName, sslMode st
 	return "postgres://" + username + ":" + password + "@" + host + ":" +
 		strconv.Itoa(port) + "/" + dbName + "?sslmode=" + sslMode
 }
+
+func GetStatusFromString(status string) int {
+	switch status {
+	case "pending":
+		return 1
+	case "in-progress":
+		return 2
+	case "completed":
+		return 3
+	default:
+		return 0
+	}
+}

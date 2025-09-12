@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	app_config "todo/config/app"
+	"todo/service"
 	database "todo/storage"
 	"todo/utils"
 
@@ -11,14 +12,17 @@ import (
 )
 
 type App struct {
-	Config *app_config.Config
-	ctx    context.Context
-	DB     *database.DB
+	Config              *app_config.Config
+	ctx                 context.Context
+	DB                  *database.DB
+	LocalStorageService service.TaskService
+	PostgresService     service.TaskService
 }
 
-func NewApp(config *app_config.Config) *App {
+func NewApp(config *app_config.Config, s service.TaskService) *App {
 	return &App{
-		Config: config,
+		Config:              config,
+		LocalStorageService: s,
 	}
 }
 
@@ -84,4 +88,17 @@ func (a *App) ConnectToDatabase(dbPayload DatabaseConnectionPayload) error {
 	a.Config.DB.SSLMode = dbPayload.SSLMode
 
 	return a.Config.SaveConfigToFile()
+}
+
+type LocalStoragePayload struct {
+	Title    string `json:"title"`
+	Deadline string `json:"deadline"`
+	Status   string `json:"status"`
+	Priority string `json:"priority"`
+}
+
+func (a *App) SaveLocalTask(task LocalStoragePayload) error {
+	log.Println("Saving task to local storage:", task)
+	status := utils.GetStatusFromString(task.Status)
+	return a.LocalStorageService.AddTask(task.Title, task.Deadline, status, task.Status)
 }

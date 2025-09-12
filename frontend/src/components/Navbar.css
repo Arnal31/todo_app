@@ -1,0 +1,27 @@
+.navbar {
+  background-color: #ff5b5b;
+  color: white;
+  padding: 20px 30px;
+  display: flex;
+  align-items: center;
+  min-height: 60px;
+}
+
+.navbar-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.navbar-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.navbar-subtitle {
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 400;
+}

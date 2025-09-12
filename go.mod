@@ -7,6 +7,7 @@ toolchain go1.24.1
 require (
 	github.com/jackc/pgconn v1.14.3
 	github.com/jackc/pgx v3.6.2+incompatible
+	github.com/mattn/go-sqlite3 v1.14.32
 	github.com/wailsapp/wails/v2 v2.10.2
 )
 

@@ -9,9 +9,9 @@ interface UserInfoPayload {
 	email: string;
 }
 
-export async function changeUserInfo(userInfo: UserInfoPayload){
+export async function changeUserInfo(userInfo: UserInfoPayload) {
 	try {
-		await UpdateUserInfo(UserInfoPayload);
+		await UpdateUserInfo(userInfo);
 	} catch (error) {
 		console.error("Failed to update user info:", error);
 	}

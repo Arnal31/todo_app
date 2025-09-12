@@ -4,6 +4,9 @@ import (
 	"embed"
 	"todo/app"
 	app_config "todo/config/app"
+	"todo/repository"
+	"todo/service"
+	database "todo/storage"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -21,10 +24,16 @@ func main() {
 		panic(err)
 	}
 	// Create an instance of the app structure
-	app := app.NewApp(cfg)
+	db, err := database.ConnectToLocalDB("sqlite3", cfg.LocalStorage.FilePath)
+	if err != nil {
+		panic(err)
+	}
+	localRepo := repository.NewLocalTaskRepository(db)
+	localService := service.NewTaskService(localRepo)
+	app := app.NewApp(cfg, localService)
 
 	// Create application with options
-	err := wails.Run(&options.App{
+	err = wails.Run(&options.App{
 		Title:  "todo",
 		Width:  cfg.Width,
 		Height: cfg.Height,
