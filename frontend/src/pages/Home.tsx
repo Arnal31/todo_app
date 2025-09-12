@@ -1,34 +1,37 @@
-import React, { useState } from 'react';
-import logo from '../assets/images/logo-universal.png';
-import { } from '../../wailsjs/go/app/App';
-
-import { UpdateUserInfo } from '../../wailsjs/go/app/App';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-const MOCK = {
-	firstName: "John",
-	lastName: "Doe",
-	username: "johndoe",
-	email: "dsad@dsa"
-}
+import Button from '../components/Button';
+import { getUserInfo } from '../utils/user';
+import './Home.css';
 
 const Home: React.FC = () => {
-	const [resultText, setResultText] = useState("Please enter your name below 👇");
-	const [name, setName] = useState('');
-
-	const updateName = (e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value);
-	const updateResultText = (result: string) => setResultText(result);
 	const navigate = useNavigate();
-	function greet() {
+	const handleStartClick = () => {
 		navigate('/create_account');
-	}
+	};
+
+	useEffect(() => {
+		const checkAccount = async () => {
+			const userInfo = await getUserInfo();
+			if (userInfo && userInfo.username && userInfo.email && userInfo.firstName && userInfo.lastName) {
+				navigate('/tasks');
+			}
+		};
+		checkAccount();
+	}, []);
 
 	return (
-		<div id="App">
-			<img src={logo} id="logo" alt="logo" />
-			<div id="result" className="result">{resultText}</div>
-			<div id="input" className="input-box">
-				<input id="name" className="input" onChange={updateName} autoComplete="off" name="input" type="text" />
-				<button className="btn" onClick={greet}>Greet</button>
+		<div className="home-page">
+			<div className="home-container">
+				<div className="home-content">
+					<h1 className="home-title">Welcome to Todo App</h1>
+					<p className="home-subtitle">
+						Organize your tasks and boost your productivity with our simple and elegant todo application.
+					</p>
+					<Button variant="primary" size="large" onClick={handleStartClick}>
+						Get Started
+					</Button>
+				</div>
 			</div>
 		</div>
 	);

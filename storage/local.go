@@ -19,3 +19,8 @@ func ConnectToLocalDB(driverName, dataSourceName string) (*LocalDB, error) {
 	}
 	return &LocalDB{DB: db}, nil
 }
+
+func (d *LocalDB) Close() error {
+	err := d.DB.Close()
+	return err
+}

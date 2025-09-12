@@ -48,6 +48,15 @@ type UserInfoPayload struct {
 	Email     string `json:"email"`
 }
 
+func (a *App) GetUserInfo() UserInfoPayload {
+	return UserInfoPayload{
+		FirstName: a.Config.User.FirstName,
+		LastName:  a.Config.User.LastName,
+		Username:  a.Config.User.Username,
+		Email:     a.Config.User.Email,
+	}
+}
+
 func (a *App) UpdateUserInfo(userInfo UserInfoPayload) error {
 	log.Println("Updating user info to:", userInfo)
 	a.Config.User.Username = userInfo.Username
@@ -91,14 +100,56 @@ func (a *App) ConnectToDatabase(dbPayload DatabaseConnectionPayload) error {
 }
 
 type LocalStoragePayload struct {
+	ID       int    `json:"id"`
 	Title    string `json:"title"`
 	Deadline string `json:"deadline"`
 	Status   string `json:"status"`
 	Priority string `json:"priority"`
+	Created  string `json:"created_at"`
 }
 
 func (a *App) SaveLocalTask(task LocalStoragePayload) error {
 	log.Println("Saving task to local storage:", task)
-	status := utils.GetStatusFromString(task.Status)
-	return a.LocalStorageService.AddTask(task.Title, task.Deadline, status, task.Status)
+	priority := utils.GetPriorityFromString(task.Status)
+	return a.LocalStorageService.AddTask(task.Title, task.Deadline, priority, task.Status, task.Created)
+}
+
+func (a *App) GetLocalTasks() ([]LocalStoragePayload, error) {
+	log.Print("Fetching tasks from local storage")
+	tasks, err := a.LocalStorageService.GetTasks()
+	if err != nil {
+		log.Println("Error fetching tasks from local storage:", err)
+		return nil, err
+	}
+	log.Printf("Fetched %d tasks from local storage", len(tasks))
+	var result []LocalStoragePayload
+	for _, t := range tasks {
+		priority := utils.GettingPriorityFromInt(t.Priority)
+		result = append(result, LocalStoragePayload{
+			ID:       t.ID,
+			Title:    t.Title,
+			Deadline: t.Deadline,
+			Status:   t.Status,
+			Priority: priority,
+			Created:  t.Created,
+		})
+	}
+	return result, nil
+}
+
+func (a *App) DeleteLocalTask(id int) error {
+	return a.LocalStorageService.DeleteTask(id)
+}
+
+func (a *App) UpdateLocalTask(task LocalStoragePayload) error {
+	priority := utils.GetPriorityFromString(task.Status)
+	return a.LocalStorageService.UpdateTask(task.ID, task.Title, task.Deadline, priority, task.Status, task.Created)
+}
+
+func (a *App) UpdateLocalTaskStatus(id int, status string) error {
+	err := a.LocalStorageService.UpdateTaskStatus(id, status)
+	if err != nil {
+		log.Println("Error updating task status:", err)
+	}
+	return err
 }

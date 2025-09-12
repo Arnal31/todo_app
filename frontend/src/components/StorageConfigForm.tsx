@@ -13,9 +13,16 @@ interface PostgresConfig {
 }
 
 interface StorageConfigFormProps {
-	onSubmit: (config: PostgresConfig) => void;
+	onSubmit: (config: PostgresConfig, hasPostgres: boolean) => void;
 }
 
+const SSLMODEOPTIONS: DropdownOption[] = [
+	{ value: 'disable', label: 'Disable' },
+	{ value: 'require', label: 'Require' },
+	{ value: 'verify-ca', label: 'Verify CA' },
+	{ value: 'verify-full', label: 'Verify Full' },
+	{ value: 'prefer', label: 'Prefer' }
+];
 function StorageConfigForm({ onSubmit }: StorageConfigFormProps) {
 	const [hasPostgres, setHasPostgres] = useState(false);
 	const [config, setConfig] = useState<PostgresConfig>({
@@ -27,13 +34,6 @@ function StorageConfigForm({ onSubmit }: StorageConfigFormProps) {
 		dbName: ''
 	});
 
-	const sslModeOptions: DropdownOption[] = [
-		{ value: 'disable', label: 'Disable' },
-		{ value: 'require', label: 'Require' },
-		{ value: 'verify-ca', label: 'Verify CA' },
-		{ value: 'verify-full', label: 'Verify Full' },
-		{ value: 'prefer', label: 'Prefer' }
-	];
 
 	const handleInputChange = (field: keyof PostgresConfig, value: string) => {
 		setConfig(prev => ({
@@ -42,11 +42,11 @@ function StorageConfigForm({ onSubmit }: StorageConfigFormProps) {
 		}));
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = (e) => {
 		e.preventDefault();
 
 		if (hasPostgres) {
-			onSubmit(config);
+			onSubmit(config, hasPostgres);
 		} else {
 			onSubmit({
 				username: '',
@@ -55,7 +55,7 @@ function StorageConfigForm({ onSubmit }: StorageConfigFormProps) {
 				password: '',
 				sslMode: '',
 				dbName: '',
-			});
+			}, hasPostgres);
 		}
 	};
 
@@ -144,7 +144,7 @@ function StorageConfigForm({ onSubmit }: StorageConfigFormProps) {
 						required
 					/>
 
-					<Dropdown options={sslModeOptions} value={config.sslMode} onChange={(value) =>
+					<Dropdown options={SSLMODEOPTIONS} value={config.sslMode} onChange={(value) =>
 						handleInputChange('sslMode', value)}
 						placeholder="Select SSL Mode"
 						disabled={!hasPostgres}

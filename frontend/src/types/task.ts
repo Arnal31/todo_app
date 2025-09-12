@@ -1,17 +1,24 @@
 // Task types and interfaces
 export interface Task {
-  id: string;
-  title: string;
-  priority: 'Low' | 'Medium' | 'High';
-  deadline: string;
-  status: 'Active' | 'Completed' | 'Expired';
-  createdAt: string;
+	id: number;
+	title: string;
+	priority: 'Low' | 'Medium' | 'High';
+	deadline: string;
+	status: 'Active' | 'Completed' | 'Expired';
+	createdAt: string;
 }
 
 export interface TaskFormData {
-  title: string;
-  priority: 'Low' | 'Medium' | 'High';
-  deadline: string;
+	title: string;
+	priority: 'Low' | 'Medium' | 'High';
+	deadline: string;
+}
+
+export interface UserInfo {
+	firstName: string;
+	lastName: string;
+	username: string;
+	email: string;
 }
 
 export type TaskStatus = 'Active' | 'Completed' | 'Expired';

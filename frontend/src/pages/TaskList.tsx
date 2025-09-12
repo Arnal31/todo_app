@@ -1,19 +1,52 @@
 import { useState, useEffect } from 'react';
-import { Task, TaskFormData, FilterBy, SortBy } from '../types/task';
+import { Task, TaskFormData, FilterBy, SortBy, UserInfo } from '../types/task';
 import Navbar from '../components/Navbar';
 import Button from '../components/Button';
 import TaskItem from '../components/TaskItem';
 import TaskModal from '../components/TaskModal';
 import TaskFilters from '../components/TaskFilters';
 import './TaskList.css';
-import { getFilteredTasks } from '../utils/task';
+import { deleteTask, getFilteredTasks, getTasks, updateTaskStatus } from '../utils/task';
+import { addTask } from '../utils/task';
+import { getUserInfo } from '../utils/user';
+
+function getPriorty(priority: string): 'Low' | 'Medium' | 'High' {
+	switch (priority) {
+		case 'High':
+			return 'High';
+		case 'Medium':
+			return 'Medium';
+		case 'Low':
+			return 'Low';
+		default:
+			return 'Low';
+	}
+}
+
+function getStatus(status: string): 'Active' | 'Completed' | 'Expired' {
+	switch (status) {
+		case 'Active':
+			return 'Active';
+		case 'Completed':
+			return 'Completed';
+		case 'Expired':
+			return 'Expired';
+		default:
+			return 'Active';
+	}
+}
 
 function TaskList() {
 	const [tasks, setTasks] = useState<Task[]>([]);
 	const [isModalOpen, setIsModalOpen] = useState(false);
 	const [filterBy, setFilterBy] = useState<FilterBy>('all');
 	const [sortBy, setSortBy] = useState<SortBy>('deadline');
-
+	const [userInfo, setUserInfo] = useState<UserInfo>({
+		firstName: '',
+		lastName: '',
+		username: '',
+		email: ''
+	});
 	useEffect(() => {
 		const updateTaskStatuses = () => {
 			const now = new Date();
@@ -24,7 +57,10 @@ function TaskList() {
 				const taskDeadline = new Date(task.deadline);
 				taskDeadline.setHours(0, 0, 0, 0);
 
-				if (taskDeadline < now) { return { ...task, status: 'Expired' as const }; } else {
+				if (taskDeadline < now) {
+					updateTaskStatus(task.id, 'Expired');
+					return { ...task, status: 'Expired' as const };
+				} else {
 					return {
 						...task,
 						status: 'Active' as const
@@ -36,20 +72,61 @@ function TaskList() {
 			interval = setInterval(updateTaskStatuses, 60000); return () => clearInterval(interval);
 	}, []);
 
-	const handleAddTask = (taskData: TaskFormData) => {
+	useEffect(() => {
+		const GetUserInfo = async () => {
+			try {
+				const user = await getUserInfo();
+				if (user) {
+					setUserInfo(user)
+				}
+			} catch (error) {
+				console.error("Failed to fetch user info:", error);
+			}
+		}
+
+		GetUserInfo();
+	}, []);
+	useEffect(() => {
+		const GetTasks = async () => {
+			try {
+				const tasksData = await getTasks();
+				const newtasks = tasksData.map(t => ({
+					id: t.id,
+					title: t.title,
+					priority: getPriorty(t.priority),
+					deadline: t.deadline,
+					status: getStatus(t.status),
+					createdAt: t.created_at,
+				}));
+				setTasks(newtasks);
+			} catch (error) {
+				console.error("Failed to fetch tasks:", error);
+			}
+		};
+		GetTasks();
+	}, []);
+	const handleAddTask = async (taskData: TaskFormData) => {
 		const newTask: Task = {
-			id: Date.now().toString(),
+			id: 0, // Temporary ID, will be replaced by backend
 			title: taskData.title,
 			priority: taskData.priority,
 			deadline: taskData.deadline,
 			status: 'Active',
 			createdAt: new Date().toISOString()
 		};
+		await addTask({
+			id: newTask.id,
+			created_at: newTask.createdAt,
+			title: newTask.title,
+			deadline: newTask.deadline,
+			status: newTask.status,
+			priority: newTask.priority
+		});
 
 		setTasks(prev => [...prev, newTask]);
 	};
 
-	const handleToggleComplete = (taskId: string) => {
+	const handleToggleComplete = (taskId: number) => {
 		setTasks(prev =>
 			prev.map(task =>
 				task.id === taskId
@@ -60,10 +137,15 @@ function TaskList() {
 					: task
 			)
 		);
+		const task = tasks.find(t => t.id === taskId);
+		if (!task) return;
+		updateTaskStatus(task.id, task.status === 'Completed' ? 'Active' : 'Completed');
+
 	};
 
-	const handleDeleteTask = (taskId: string) => {
+	const handleDeleteTask = (taskId: number) => {
 		setTasks(prev => prev.filter(task => task.id !== taskId));
+		deleteTask(taskId)
 	};
 
 
@@ -77,7 +159,7 @@ function TaskList() {
 
 	return (
 		<div className="task-list-page">
-			<Navbar />
+			<Navbar username={userInfo.username} email={userInfo.email} />
 			<div className="task-list-container">
 				<div className="task-list-header">
 					<div className="header-content">
@@ -144,5 +226,4 @@ function TaskList() {
 		</div>
 	);
 };
-
 export default TaskList;

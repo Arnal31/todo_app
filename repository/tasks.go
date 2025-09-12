@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"log"
 	"todo/models"
 	database "todo/storage"
 )
@@ -11,6 +12,7 @@ type TaskRepository interface {
 	GetTasks() ([]models.Task, error)
 	UpdateTask(task models.Task) error
 	DeleteTask(id int) error
+	UpdateTaskStatus(id int, status string) error
 }
 
 type LocalTaskRepository struct {
@@ -84,6 +86,18 @@ func (r *PostgresTaskRepository) DeleteTask(id int) error {
 }
 
 func NewLocalTaskRepository(db *database.LocalDB) *LocalTaskRepository {
+	createTableSQL := `
+		CREATE TABLE IF NOT EXISTS tasks (
+			id INTEGER PRIMARY KEY AUTOINCREMENT,
+			title TEXT,
+			deadline TEXT,
+			priority TEXT,
+			status TEXT
+		);`
+	_, err := db.Exec(createTableSQL)
+	if err != nil {
+		panic(err)
+	}
 	return &LocalTaskRepository{
 		SQliteDB: db,
 	}
@@ -98,6 +112,15 @@ func (r *LocalTaskRepository) UpdateTask(task models.Task) error {
 func (r *LocalTaskRepository) DeleteTask(id int) error {
 	query := "DELETE FROM tasks WHERE id = ?"
 	_, err := r.SQliteDB.Exec(query, id)
+	return err
+}
+
+func (r *LocalTaskRepository) UpdateTaskStatus(id int, status string) error {
+	query := "UPDATE tasks SET status = ? WHERE id = ?"
+	_, err := r.SQliteDB.Exec(query, status, id)
+	if err != nil {
+		log.Println("Error updating task status:", err)
+	}
 	return err
 }
 func (r *LocalTaskRepository) GetTasks() ([]models.Task, error) {

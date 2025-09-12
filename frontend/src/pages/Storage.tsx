@@ -14,12 +14,18 @@ interface PostgresConfig {
 
 function Storage() {
 	const navigate = useNavigate();
-	const handleConfigSubmit = async (config: PostgresConfig) => {
-		await connectToDatabase(config);
-		alert('Database connection successful!');
-		navigate('/');
+	const handleConfigSubmit = async (config: PostgresConfig, hasPostgres: boolean) => {
+		try {
+			if (hasPostgres) {
+				await connectToDatabase(config);
+				alert('Database connection successful!');
+			}
+			navigate('/tasks');
+		} catch (error) {
+			console.error('Error connecting to database:', error);
+			alert('Failed to connect to database. Please check your settings and try again.');
+		}
 	}
-
 
 	return (
 		<div className="storage-page">

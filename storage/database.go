@@ -25,10 +25,15 @@ func ConnectToDB(dsn string) (*DB, error) {
 		log.Println("Error connecting to database:", err)
 		return nil, err
 	}
+	// Test the connection
+	err = conn.Ping(context.Background())
+	if err != nil {
+		log.Println("Error pinging database:", err)
+		return nil, err
+	}
 	return &DB{
 		Pool: conn,
 	}, nil
-
 }
 
 func (d *DB) Close() {

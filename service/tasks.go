@@ -1,16 +1,17 @@
 package service
 
 import (
-	"time"
+	"log"
 	"todo/models"
 	"todo/repository"
 )
 
 type TaskService interface {
-	AddTask(title string, deadline string, priority int, status string) error
+	AddTask(title string, deadline string, priority int, status string, created string) error
 	GetTasks() ([]models.Task, error)
-	UpdateTask(id int, title string, deadline string, priority int, status string) error
+	UpdateTask(id int, title string, deadline string, priority int, status string, created string) error
 	DeleteTask(id int) error
+	UpdateTaskStatus(id int, status string) error
 }
 
 type Service struct {
@@ -23,19 +24,13 @@ func NewTaskService(repo repository.TaskRepository) *Service {
 	}
 }
 
-func (s *Service) AddTask(title string, deadline string, priority int, status string) error {
-	layout := "2006-01-02"
-
-	t, err := time.Parse(layout, deadline)
-	if err != nil {
-		return err
-	}
-
-	_, err = s.TaskRepository.AddTask(&models.Task{
+func (s *Service) AddTask(title string, deadline string, priority int, status string, created string) error {
+	_, err := s.TaskRepository.AddTask(&models.Task{
 		Title:    title,
-		Deadline: t,
+		Deadline: deadline,
 		Priority: priority,
 		Status:   status,
+		Created:  created,
 	})
 	if err != nil {
 		return err
@@ -51,18 +46,14 @@ func (s *Service) GetTasks() ([]models.Task, error) {
 	return tasks, nil
 }
 
-func (s *Service) UpdateTask(id int, title string, deadline string, priority int, status string) error {
-	layout := "2006-01-02"
-	t, err := time.Parse(layout, deadline)
-	if err != nil {
-		return err
-	}
-	err = s.TaskRepository.UpdateTask(models.Task{
+func (s *Service) UpdateTask(id int, title string, deadline string, priority int, status string, created string) error {
+	err := s.TaskRepository.UpdateTask(models.Task{
 		ID:       id,
 		Title:    title,
-		Deadline: t,
+		Deadline: deadline,
 		Priority: priority,
 		Status:   status,
+		Created:  created,
 	})
 	if err != nil {
 		return err
@@ -72,6 +63,15 @@ func (s *Service) UpdateTask(id int, title string, deadline string, priority int
 
 func (s *Service) DeleteTask(id int) error {
 	err := s.TaskRepository.DeleteTask(id)
+	if err != nil {
+		log.Println("Error deleting task:", err)
+		return err
+	}
+	return nil
+}
+
+func (s *Service) UpdateTaskStatus(id int, status string) error {
+	err := s.TaskRepository.UpdateTaskStatus(id, status)
 	if err != nil {
 		return err
 	}

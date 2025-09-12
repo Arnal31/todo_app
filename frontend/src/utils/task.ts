@@ -1,7 +1,14 @@
 import { Task } from '../types/task';
+import { SaveLocalTask, GetLocalTasks, DeleteLocalTask, UpdateLocalTaskStatus } from "../../wailsjs/go/app/App";
 
-
-
+interface TaskPayload {
+	id: number;
+	title: string;
+	deadline: string;
+	status: string;
+	priority: string;
+	created_at: string;
+}
 
 
 export function getTaskStatusClass(task: Task): string {
@@ -57,4 +64,40 @@ export function getFilteredTasks(tasks: Task[], filterBy: string, sortBy: string
 	return filtered;
 };
 
+export async function addTask(task: TaskPayload) {
+	try {
+		await SaveLocalTask(task);
+		console.log("Task saved successfully.");
+	} catch (error) {
+		console.error("Error saving task:", error);
+	}
+}
+
+export async function getTasks() {
+	try {
+		const tasks = await GetLocalTasks();
+		return tasks
+	} catch (error) {
+		console.error("Error fetching tasks:", error);
+		return [];
+	}
+}
+
+export async function deleteTask(taskId: number) {
+	try {
+		await DeleteLocalTask(taskId);
+		console.log("Task deleted successfully.");
+	} catch (error) {
+		console.error("Error deleting task:", error);
+	}
+}
+
+export async function updateTaskStatus(taskId: number, newStatus: string) {
+	try {
+		await UpdateLocalTaskStatus(taskId, newStatus);
+		console.log("Task status updated successfully.");
+	} catch (error) {
+		console.error("Error updating task status:", error);
+	}
+}
 

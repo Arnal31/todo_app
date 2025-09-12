@@ -63,6 +63,10 @@ func (c *Config) Load() error {
 		return fmt.Errorf("could not unmarshal config file: %v", err)
 	}
 
+	if c.LocalStorage.FilePath == "" {
+		c.LocalStorage = storage.DefaultSQLiteConfig()
+	}
+
 	return nil
 }
 

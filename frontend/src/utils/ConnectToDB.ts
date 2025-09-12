@@ -12,9 +12,7 @@ interface DBParams {
 export async function connectToDatabase(params: DBParams): Promise<void> {
 	try {
 		await ConnectToDatabase(params);
-		alert('Database connection successful!');
 	} catch (error) {
-		console.error('Error connecting to database:', error);
-		alert('Failed to connect to database. Please check your settings and try again.');
+		throw new Error('Failed to connect to database. Please check your settings and try again.');
 	}
 }

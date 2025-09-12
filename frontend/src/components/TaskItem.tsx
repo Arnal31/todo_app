@@ -6,8 +6,8 @@ import { getPriorityColor, getTaskStatusClass } from '../utils/task';
 
 interface TaskItemProps {
 	task: Task;
-	onToggleComplete: (taskId: string) => void;
-	onDelete: (taskId: string) => void;
+	onToggleComplete: (taskId: number) => void;
+	onDelete: (taskId: number) => void;
 }
 
 function TaskItem({ task, onToggleComplete, onDelete }: TaskItemProps) {

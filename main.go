@@ -28,6 +28,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer db.Close()
 	localRepo := repository.NewLocalTaskRepository(db)
 	localService := service.NewTaskService(localRepo)
 	app := app.NewApp(cfg, localService)

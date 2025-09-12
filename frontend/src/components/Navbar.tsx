@@ -1,16 +1,16 @@
-import React from 'react';
 import './Navbar.css';
 
 interface NavbarProps {
 	username?: string;
+	email?: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ username = "User" }) => {
+function Navbar({ username = "User", email = "user@emai.com" }: NavbarProps) {
 	return (
 		<nav className="navbar">
 			<div className="navbar-content">
 				<h1 className="navbar-title">{username}</h1>
-				<div className="navbar-subtitle">simplecompany@gmail.com</div>
+				<div className="navbar-subtitle">{email}</div>
 			</div>
 		</nav>
 	);
