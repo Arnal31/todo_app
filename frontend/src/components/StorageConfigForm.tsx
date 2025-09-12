@@ -6,9 +6,10 @@ import './StorageConfigForm.css';
 interface PostgresConfig {
 	username: string;
 	host: string;
-	port: string;
+	port: number;
 	password: string;
 	sslMode: string;
+	dbName: string;
 }
 
 interface StorageConfigFormProps {
@@ -20,9 +21,10 @@ function StorageConfigForm({ onSubmit }: StorageConfigFormProps) {
 	const [config, setConfig] = useState<PostgresConfig>({
 		username: '',
 		host: '',
-		port: '',
+		port: 0,
 		password: '',
-		sslMode: ''
+		sslMode: '',
+		dbName: ''
 	});
 
 	const sslModeOptions: DropdownOption[] = [
@@ -36,7 +38,7 @@ function StorageConfigForm({ onSubmit }: StorageConfigFormProps) {
 	const handleInputChange = (field: keyof PostgresConfig, value: string) => {
 		setConfig(prev => ({
 			...prev,
-			[field]: value
+			[field]: field === 'port' ? (value === '' ? 0 : parseInt(value, 10)) : value
 		}));
 	};
 
@@ -44,16 +46,15 @@ function StorageConfigForm({ onSubmit }: StorageConfigFormProps) {
 		e.preventDefault();
 
 		if (hasPostgres) {
-			// Submit with Postgres configuration
 			onSubmit(config);
 		} else {
-			// Submit with empty config - will use local SQLite
 			onSubmit({
 				username: '',
 				host: '',
-				port: '',
+				port: 0,
 				password: '',
-				sslMode: ''
+				sslMode: '',
+				dbName: '',
 			});
 		}
 	};
@@ -120,7 +121,7 @@ function StorageConfigForm({ onSubmit }: StorageConfigFormProps) {
 						required
 					/>
 
-					<InputField type="text" placeholder="Port" value={config.port} onChange={(value) =>
+					<InputField type="number" placeholder="Port" value={config.port === 0 ? '' : config.port.toString()} onChange={(value) =>
 						handleInputChange('port', value)}
 						icon={
 							<ServerIcon />}
@@ -128,6 +129,13 @@ function StorageConfigForm({ onSubmit }: StorageConfigFormProps) {
 						required
 					/>
 
+					<InputField type="text" placeholder="DBName" value={config.dbName} onChange={(value) =>
+						handleInputChange('dbName', value)}
+						icon={
+							<ServerIcon />}
+						disabled={!hasPostgres}
+						required
+					/>
 					<InputField type="password" placeholder="Password" value={config.password}
 						onChange={(value) => handleInputChange('password', value)}
 						icon={

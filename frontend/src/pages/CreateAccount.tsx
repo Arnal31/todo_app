@@ -1,14 +1,16 @@
 import CreateAccountForm from '../components/CreateAccountForm';
 import './CreateAccount.css';
 import { useNavigate } from 'react-router-dom';
+import { UpdateUserInfo } from '../../wailsjs/go/app/App';
 import { changeUserInfo } from '../utils/ChangeUserInfo';
-
 interface FormData {
 firstName: string;
 lastName: string;
 username: string;
 email: string;
 }
+
+
 
 function CreateAccount() {
 const navigate = useNavigate();

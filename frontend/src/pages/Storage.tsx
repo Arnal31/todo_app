@@ -1,19 +1,25 @@
-import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import StorageConfigForm from '../components/StorageConfigForm';
+import { connectToDatabase } from '../utils/ConnectToDB';
 import './Storage.css';
 
 interface PostgresConfig {
 	username: string;
 	host: string;
-	port: string;
+	port: number;
 	password: string;
 	sslMode: string;
+	dbName: string;
 }
 
-const Storage: React.FC = () => {
-	const handleConfigSubmit = (config: PostgresConfig) => {
-		console.log('Storage config submitted:', config);
-	};
+function Storage() {
+	const navigate = useNavigate();
+	const handleConfigSubmit = async (config: PostgresConfig) => {
+		await connectToDatabase(config);
+		alert('Database connection successful!');
+		navigate('/');
+	}
+
 
 	return (
 		<div className="storage-page">

@@ -20,7 +20,7 @@ function CreateAccountForm({ onSubmit }: CreateAccountFormProps) {
 		email: ''
 	});
 
-	const handleSubmit = (e: { preventDefault: () => void; }) => {
+	const handleSubmit = (e) => {
 		e.preventDefault();
 		onSubmit(formData);
 	};

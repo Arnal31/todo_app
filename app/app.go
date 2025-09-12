@@ -6,6 +6,8 @@ import (
 	app_config "todo/config/app"
 	database "todo/storage"
 	"todo/utils"
+
+	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
 type App struct {
@@ -51,6 +53,10 @@ func (a *App) UpdateUserInfo(userInfo UserInfoPayload) error {
 	return a.Config.SaveConfigToFile()
 }
 
+func (a *App) Greet() string {
+	return "Hello, World!"
+}
+
 type DatabaseConnectionPayload struct {
 	Host     string `json:"host"`
 	Port     int    `json:"port"`
@@ -61,9 +67,8 @@ type DatabaseConnectionPayload struct {
 }
 
 func (a *App) ConnectToDatabase(dbPayload DatabaseConnectionPayload) error {
-	log.Println("Connecting to database with payload:", dbPayload)
+	runtime.LogInfo(a.ctx, "Attempting to connect to database...")
 	dsn := utils.DsnFromParams(string(dbPayload.Host), dbPayload.Port, dbPayload.Username, dbPayload.Password, dbPayload.DBName, dbPayload.SSLMode)
-	// Test connection
 	var err error
 	a.DB, err = database.ConnectToDB(dsn)
 	if err != nil {

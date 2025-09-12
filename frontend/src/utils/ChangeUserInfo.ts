@@ -1,20 +1,18 @@
-import { UpdateUserInfo } from '../../wailsjs/go/app/App.js';
+import { UpdateUserInfo } from '../../wailsjs/go/app/App';
+import { Greet } from '../../wailsjs/go/app/App';
 
-interface changeUserInfoPropts {
+
+interface UserInfoPayload {
 	firstName: string;
 	lastName: string;
 	username: string;
 	email: string;
 }
 
-
-export async function changeUserInfo(userInfo: changeUserInfoPropts) {
+export async function changeUserInfo(userInfo: UserInfoPayload){
 	try {
-		await UpdateUserInfo(userInfo);
-		alert('User information updated successfully!');
+		await UpdateUserInfo(UserInfoPayload);
 	} catch (error) {
-		console.error('Error updating user information:', error);
-		alert('Failed to update user information. Please try again.');
+		console.error("Failed to update user info:", error);
 	}
-
 }

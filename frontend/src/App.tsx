@@ -13,7 +13,7 @@ function App() {
 				<main className="main-content">
 					<Routes>
 						<Route path="/" element={<Home />} />
-						<Route path="/create-account" element={<CreateAccount />} />
+						<Route path="/create_account" element={<CreateAccount />} />
 						<Route path="/storage" element={<Storage />} />
 					</Routes>
 				</main>
