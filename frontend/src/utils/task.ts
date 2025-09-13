@@ -85,7 +85,7 @@ export function getFilteredTasks(tasks: Task[], filterBy: string, sortBy: string
 
 export async function addTask(task: TaskPayload) {
 	try {
-		await SaveLocalTask(task);
+		const id = await SaveLocalTask(task);
 		console.log("Task saved to local storage successfully.");
 
 		const postgresAvailable = await isPostgresAvailable();
@@ -94,6 +94,7 @@ export async function addTask(task: TaskPayload) {
 			console.log("Task also saved to PostgreSQL with ID:", postgresTaskId);
 			return postgresTaskId;
 		}
+		return id;
 	} catch (error) {
 		console.error("Error saving task:", error);
 		throw error;

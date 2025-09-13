@@ -126,7 +126,7 @@ function TaskList() {
 			status: 'Active',
 			createdAt: new Date().toISOString()
 		};
-		await addTask({
+		const id = await addTask({
 			id: newTask.id,
 			created_at: newTask.createdAt,
 			title: newTask.title,
@@ -134,8 +134,8 @@ function TaskList() {
 			status: newTask.status,
 			priority: newTask.priority
 		});
-
-		setTasks(prev => [...prev, newTask]);
+		const savedTask = { ...newTask, id };
+		setTasks(prev => [...prev, savedTask]);
 	};
 
 	const handleToggleComplete = (taskId: number) => {
