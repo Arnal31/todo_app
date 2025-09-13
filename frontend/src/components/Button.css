@@ -32,7 +32,7 @@
 /* Variants */
 .btn-primary {
   background-color: var(--primary-color);
-  color: var(--text-primary);
+  color: white;
 }
 
 .btn-primary:hover:not(:disabled) {

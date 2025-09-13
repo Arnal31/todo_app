@@ -207,7 +207,7 @@ func (r *LocalTaskRepository) GetTasks() ([]models.Task, error) {
 	var tasks []models.Task
 	for rows.Next() {
 		var task models.Task
-		err := rows.Scan(&task.ID, &task.Title, &task.Deadline, &task.Created, &task.Priority, &task.Status, &task.Created)
+		err := rows.Scan(&task.ID, &task.Title, &task.Deadline, &task.Priority, &task.Status, &task.Created)
 		if err != nil {
 			return nil, err
 		}
