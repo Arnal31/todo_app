@@ -5,7 +5,7 @@
   flex-wrap: wrap;
   margin-bottom: 24px;
   padding: 20px;
-  background: white;
+  background: var(--bg-primary);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
@@ -22,17 +22,18 @@
 .sort-section label {
   font-size: 14px;
   font-weight: 500;
-  color: #2c3e50;
+  color: var(--text-primary);
 }
 
 .filter-select,
 .sort-select {
+  color: var(--text-primary);
   padding: 10px 14px;
   border: 2px solid #e1e8ed;
   border-radius: 8px;
   font-size: 14px;
   font-family: inherit;
-  background-color: white;
+  background-color: var(--bg-secondary);
   cursor: pointer;
   transition: all 0.2s ease;
 }

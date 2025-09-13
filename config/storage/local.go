@@ -18,7 +18,7 @@ func DefaultSQLiteConfig() SQLiteConfig {
 	if _, err := os.Stat(defaultPath); os.IsNotExist(err) {
 		os.MkdirAll(defaultPath, os.ModePerm)
 	}
-	defaultPath = defaultPath + string(os.PathSeparator) + "local.db"
+	defaultPath = defaultPath + string(os.PathSeparator) + "local.sqlite"
 
 	if _, err := os.Stat(defaultPath); os.IsNotExist(err) {
 		file, err := os.Create(defaultPath)

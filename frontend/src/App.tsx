@@ -1,14 +1,19 @@
-import * as ReactRouter from 'react-router-dom';
+import { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import CreateAccount from './pages/CreateAccount';
 import Storage from './pages/Storage';
 import TaskList from './pages/TaskList';
 import Settings from './pages/Settings';
+import { initializeTheme } from './utils/theme';
 import './App.css';
 
-const { BrowserRouter: Router, Routes, Route } = ReactRouter;
-
 function App() {
+	useEffect(() => {
+		// Initialize theme on app load
+		initializeTheme();
+	}, []);
+
 	return (
 		<Router>
 			<div id="App">

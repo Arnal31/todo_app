@@ -37,6 +37,10 @@ func (a *App) ChangeTheme(newTheme string) error {
 	return a.Config.SaveConfigToFile()
 }
 
+func (a *App) GetTheme() string {
+	return string(a.Config.Theme)
+}
+
 func (a *App) ChangeWindowSize(width int, height int) error {
 	a.Config.Width = width
 	a.Config.Height = height
@@ -174,12 +178,9 @@ func (a *App) UpdatePostgresTaskStatus(id int, status string) error {
 
 func (a *App) ConnectToDatabase(dbPayload DatabaseConnectionPayload) error {
 	runtime.LogInfo(a.ctx, "Attempting to connect to database...")
-
-	// Validate payload fields first
 	if !utils.VerifyPayloadFields(dbPayload.DBName, dbPayload.Password, dbPayload.Host, dbPayload.SSLMode, dbPayload.Port) {
 		return errors.New("invalid database configuration: all fields are required")
 	}
-
 	dsn := utils.DsnFromParams(string(dbPayload.Host), dbPayload.Port, dbPayload.Username, dbPayload.Password, dbPayload.DBName, dbPayload.SSLMode)
 	var err error
 	db, err := database.ConnectToDB(dsn)

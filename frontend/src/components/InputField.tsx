@@ -26,13 +26,12 @@ function InputField({
 				<div className="input-icon">
 					{icon}
 				</div>
-				<input 
-					type={type} 
-					placeholder={placeholder} 
-					value={value} 
+				<input
+					type={type}
+					placeholder={placeholder}
+					value={value}
 					onChange={(e) => {
 						const inputValue = e.target.value;
-						// For number inputs, only allow numeric characters
 						if (type === 'number') {
 							if (inputValue === '' || /^\d+$/.test(inputValue)) {
 								onChange(inputValue);

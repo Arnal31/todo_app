@@ -25,3 +25,4 @@ export type TaskStatus = 'Active' | 'Completed' | 'Expired';
 export type TaskPriority = 'Low' | 'Medium' | 'High';
 export type SortBy = 'priority' | 'deadline' | 'status' | 'title';
 export type FilterBy = 'all' | TaskStatus;
+export type StorageType = 'local' | 'postgres';

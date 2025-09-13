@@ -33,6 +33,7 @@ func (s *Service) AddTask(title string, deadline string, priority int, status st
 		Created:  created,
 	})
 	if err != nil {
+		log.Println("Service: Error adding task:", err)
 		return -1, err
 	}
 	return t.ID, nil

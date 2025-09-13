@@ -14,7 +14,7 @@ function TaskItem({ task, onToggleComplete, onDeleteRequest }: TaskItemProps) {
 	const formatDate = (dateString: string) => {
 		const date = new Date(dateString);
 		return date.toLocaleDateString('en-US', {
-			month: 'short',
+			month: 'numeric',
 			day: 'numeric',
 			year: 'numeric'
 		});

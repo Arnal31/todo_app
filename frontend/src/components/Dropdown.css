@@ -32,8 +32,8 @@
   border: 2px solid #e5e7eb;
   border-radius: 12px;
   font-size: 16px;
-  color: #1f2937;
-  background: white;
+  color: var(--text-primary);
+  background: var(--bg-primary);
   transition: all 0.3s ease;
   outline: none;
   box-sizing: border-box;
@@ -63,7 +63,7 @@
 
 .dropdown-select option {
   padding: 10px;
-  color: #1f2937;
+  color: var(--text-primary);
 }
 
 /* Error state (for future use) */

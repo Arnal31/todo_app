@@ -1,5 +1,15 @@
 import { Task } from '../types/task';
-import { SaveLocalTask, GetLocalTasks, DeleteLocalTask, UpdateLocalTaskStatus } from "../../wailsjs/go/app/App";
+import {
+	SaveLocalTask,
+	GetLocalTasks,
+	DeleteLocalTask,
+	UpdateLocalTaskStatus,
+	AddPostgresTask,
+	GetPostgresTasks,
+	DeletePostgresTask,
+	UpdatePostgresTaskStatus,
+	GetPostgresConfig
+} from "../../wailsjs/go/app/App";
 
 interface TaskPayload {
 	id: number;
@@ -8,6 +18,15 @@ interface TaskPayload {
 	status: string;
 	priority: string;
 	created_at: string;
+}
+
+async function isPostgresAvailable(): Promise<boolean> {
+	try {
+		const config = await GetPostgresConfig();
+		return !!(config && config.host && config.dbName);
+	} catch (error) {
+		return false;
+	}
 }
 
 
@@ -64,19 +83,41 @@ export function getFilteredTasks(tasks: Task[], filterBy: string, sortBy: string
 	return filtered;
 };
 
-export async function addTask(task: TaskPayload) {
+export async function addTask(task: TaskPayload): Promise<number | void> {
 	try {
 		await SaveLocalTask(task);
-		console.log("Task saved successfully.");
+		console.log("Task saved to local storage successfully.");
+
+		const postgresAvailable = await isPostgresAvailable();
+		if (postgresAvailable) {
+			const postgresTaskId = await AddPostgresTask(task);
+			console.log("Task also saved to PostgreSQL with ID:", postgresTaskId);
+			return postgresTaskId;
+		}
 	} catch (error) {
 		console.error("Error saving task:", error);
+		throw error;
 	}
 }
 
-export async function getTasks() {
+export async function getTasks(): Promise<TaskPayload[]> {
 	try {
-		const tasks = await GetLocalTasks();
-		return tasks
+		// Check if PostgreSQL is available and prefer it
+		const postgresAvailable = await isPostgresAvailable();
+		if (postgresAvailable) {
+			try {
+				const postgresTasks = await GetPostgresTasks();
+				console.log("Tasks fetched from PostgreSQL");
+				return postgresTasks || [];
+			} catch (postgresError) {
+				console.warn("Failed to fetch from PostgreSQL, falling back to local:", postgresError);
+			}
+		}
+
+		// Fall back to local storage
+		const localTasks = await GetLocalTasks();
+		console.log("Tasks fetched from local storage");
+		return localTasks || [];
 	} catch (error) {
 		console.error("Error fetching tasks:", error);
 		return [];
@@ -85,19 +126,45 @@ export async function getTasks() {
 
 export async function deleteTask(taskId: number) {
 	try {
+		// Delete from local storage
 		await DeleteLocalTask(taskId);
-		console.log("Task deleted successfully.");
+		console.log("Task deleted from local storage successfully.");
+
+		// Check if PostgreSQL is available and delete from there too
+		const postgresAvailable = await isPostgresAvailable();
+		if (postgresAvailable) {
+			try {
+				await DeletePostgresTask(taskId);
+				console.log("Task also deleted from PostgreSQL.");
+			} catch (postgresError) {
+				console.warn("Failed to delete from PostgreSQL:", postgresError);
+			}
+		}
 	} catch (error) {
 		console.error("Error deleting task:", error);
+		throw error;
 	}
 }
 
 export async function updateTaskStatus(taskId: number, newStatus: string) {
 	try {
+		// Update in local storage
 		await UpdateLocalTaskStatus(taskId, newStatus);
-		console.log("Task status updated successfully.");
+		console.log("Task status updated in local storage successfully.");
+
+		// Check if PostgreSQL is available and update there too
+		const postgresAvailable = await isPostgresAvailable();
+		if (postgresAvailable) {
+			try {
+				await UpdatePostgresTaskStatus(taskId, newStatus);
+				console.log("Task status also updated in PostgreSQL.");
+			} catch (postgresError) {
+				console.warn("Failed to update status in PostgreSQL:", postgresError);
+			}
+		}
 	} catch (error) {
 		console.error("Error updating task status:", error);
+		throw error;
 	}
 }
 

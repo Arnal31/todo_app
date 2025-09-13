@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Task, TaskFormData, FilterBy, SortBy, UserInfo } from '../types/task';
+import { Task, TaskFormData, FilterBy, SortBy, UserInfo, StorageType } from '../types/task';
 import Navbar from '../components/Navbar';
 import Button from '../components/Button';
 import TaskItem from '../components/TaskItem';
@@ -10,6 +10,7 @@ import './TaskList.css';
 import { deleteTask, getFilteredTasks, getTasks, updateTaskStatus } from '../utils/task';
 import { addTask } from '../utils/task';
 import { getUserInfo } from '../utils/user';
+import { initializeTheme } from '../utils/theme';
 
 function getPriorty(priority: string): 'Low' | 'Medium' | 'High' {
 	switch (priority) {
@@ -83,6 +84,7 @@ function TaskList() {
 	}, []);
 
 	useEffect(() => {
+		initializeTheme();
 		const GetUserInfo = async () => {
 			try {
 				const user = await getUserInfo();
@@ -271,3 +273,4 @@ function TaskList() {
 	);
 };
 export default TaskList;
+
