@@ -4,8 +4,8 @@ import (
 	"context"
 	"log"
 
-	"github.com/jackc/pgconn"
-	"github.com/jackc/pgx"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -20,6 +20,7 @@ type DBs interface {
 }
 
 func ConnectToDB(dsn string) (*DB, error) {
+
 	conn, err := pgxpool.New(context.Background(), dsn)
 	if err != nil {
 		log.Println("Error connecting to database:", err)

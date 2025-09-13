@@ -7,7 +7,7 @@ import (
 )
 
 type TaskService interface {
-	AddTask(title string, deadline string, priority int, status string, created string) error
+	AddTask(title string, deadline string, priority int, status string, created string) (int, error)
 	GetTasks() ([]models.Task, error)
 	UpdateTask(id int, title string, deadline string, priority int, status string, created string) error
 	DeleteTask(id int) error
@@ -24,8 +24,8 @@ func NewTaskService(repo repository.TaskRepository) *Service {
 	}
 }
 
-func (s *Service) AddTask(title string, deadline string, priority int, status string, created string) error {
-	_, err := s.TaskRepository.AddTask(&models.Task{
+func (s *Service) AddTask(title string, deadline string, priority int, status string, created string) (int, error) {
+	t, err := s.TaskRepository.AddTask(&models.Task{
 		Title:    title,
 		Deadline: deadline,
 		Priority: priority,
@@ -33,9 +33,9 @@ func (s *Service) AddTask(title string, deadline string, priority int, status st
 		Created:  created,
 	})
 	if err != nil {
-		return err
+		return -1, err
 	}
-	return nil
+	return t.ID, nil
 }
 
 func (s *Service) GetTasks() ([]models.Task, error) {

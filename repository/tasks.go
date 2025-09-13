@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"log"
 	"todo/models"
 	database "todo/storage"
@@ -23,13 +24,70 @@ type PostgresTaskRepository struct {
 	PostgresDB database.DBs
 }
 
+// NullTaskRepository is a safe implementation when no database is available
+type NullTaskRepository struct{}
+
+func NewNullTaskRepository() *NullTaskRepository {
+	return &NullTaskRepository{}
+}
+
+func (r *NullTaskRepository) AddTask(task *models.Task) (*models.Task, error) {
+	return nil, errors.New("postgres database not configured or available")
+}
+
+func (r *NullTaskRepository) GetTasks() ([]models.Task, error) {
+	return []models.Task{}, nil // Return empty slice instead of error
+}
+
+func (r *NullTaskRepository) UpdateTask(task models.Task) error {
+	return errors.New("postgres database not configured or available")
+}
+
+func (r *NullTaskRepository) DeleteTask(id int) error {
+	return errors.New("postgres database not configured or available")
+}
+
+func (r *NullTaskRepository) UpdateTaskStatus(id int, status string) error {
+	return errors.New("postgres database not configured or available")
+}
+
 func NewPostgresTaskRepository(db database.DBs) *PostgresTaskRepository {
+	if db != nil {
+		createTableSQL := `
+		CREATE TABLE IF NOT EXISTS tasks (
+			id SERIAL PRIMARY KEY,
+			title TEXT,
+			deadline TEXT,
+			priority TEXT,
+			status TEXT
+		);`
+		_, err := db.Exec(context.Background(), createTableSQL)
+		if err != nil {
+			log.Println("Error creating tasks table:", err)
+			return nil
+		}
+	}
 	return &PostgresTaskRepository{
 		PostgresDB: db,
 	}
 }
 
+func (r *PostgresTaskRepository) UpdateTaskStatus(id int, status string) error {
+	if r.PostgresDB == nil {
+		return errors.New("postgres database not available")
+	}
+	query := "UPDATE tasks SET status = $1 WHERE id = $2"
+	ctx := context.Background()
+	_, err := r.PostgresDB.Exec(ctx, query, status, id)
+	if err != nil {
+		log.Println("Error updating task status:", err)
+	}
+	return err
+}
 func (r *PostgresTaskRepository) AddTask(task *models.Task) (*models.Task, error) {
+	if r.PostgresDB == nil {
+		return nil, errors.New("postgres database not available")
+	}
 	var last_user_id int
 	query := "INSERT INTO tasks(title, deadline, priority, status) VALUES ($1, $2, $3, $4) returning id"
 	ctx := context.Background()
@@ -51,6 +109,9 @@ func (r *PostgresTaskRepository) AddTask(task *models.Task) (*models.Task, error
 }
 
 func (r *PostgresTaskRepository) GetTasks() ([]models.Task, error) {
+	if r.PostgresDB == nil {
+		return []models.Task{}, nil // Return empty slice when no database available
+	}
 	query := "SELECT id, title, deadline, priority, status FROM tasks"
 	ctx := context.Background()
 	rows, err := r.PostgresDB.Query(ctx, query)
@@ -72,6 +133,9 @@ func (r *PostgresTaskRepository) GetTasks() ([]models.Task, error) {
 }
 
 func (r *PostgresTaskRepository) UpdateTask(task models.Task) error {
+	if r.PostgresDB == nil {
+		return errors.New("postgres database not available")
+	}
 	query := "UPDATE tasks SET title = $1, deadline = $2, priority = $3, status = $4 WHERE id = $5"
 	ctx := context.Background()
 	_, err := r.PostgresDB.Exec(ctx, query, task.Title, task.Deadline, task.Priority, task.Status, task.ID)
@@ -79,6 +143,9 @@ func (r *PostgresTaskRepository) UpdateTask(task models.Task) error {
 }
 
 func (r *PostgresTaskRepository) DeleteTask(id int) error {
+	if r.PostgresDB == nil {
+		return errors.New("postgres database not available")
+	}
 	query := "DELETE FROM tasks WHERE id = $1"
 	ctx := context.Background()
 	_, err := r.PostgresDB.Exec(ctx, query, id)

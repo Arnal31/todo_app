@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import CreateAccount from './pages/CreateAccount';
 import Storage from './pages/Storage';
 import TaskList from './pages/TaskList';
+import Settings from './pages/Settings';
 import './App.css';
 
 const { BrowserRouter: Router, Routes, Route } = ReactRouter;
@@ -17,6 +18,7 @@ function App() {
 						<Route path="/create_account" element={<CreateAccount />} />
 						<Route path="/storage" element={<Storage />} />
 						<Route path="/tasks" element={<TaskList />} />
+						<Route path="/settings" element={<Settings />} />
 					</Routes>
 				</main>
 			</div>

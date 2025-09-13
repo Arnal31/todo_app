@@ -7,10 +7,10 @@ import { getPriorityColor, getTaskStatusClass } from '../utils/task';
 interface TaskItemProps {
 	task: Task;
 	onToggleComplete: (taskId: number) => void;
-	onDelete: (taskId: number) => void;
+	onDeleteRequest: (taskId: number, taskTitle: string) => void;
 }
 
-function TaskItem({ task, onToggleComplete, onDelete }: TaskItemProps) {
+function TaskItem({ task, onToggleComplete, onDeleteRequest }: TaskItemProps) {
 	const formatDate = (dateString: string) => {
 		const date = new Date(dateString);
 		return date.toLocaleDateString('en-US', {
@@ -31,7 +31,7 @@ function TaskItem({ task, onToggleComplete, onDelete }: TaskItemProps) {
 						>
 							{task.status === 'Completed' ? 'Undo' : 'Complete'}
 						</Button>
-						<Button size="small" variant="danger" onClick={() => onDelete(task.id)}
+						<Button size="small" variant="danger" onClick={() => onDeleteRequest(task.id, task.title)}
 						>
 							Delete
 						</Button>

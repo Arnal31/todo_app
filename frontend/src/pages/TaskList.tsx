@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar';
 import Button from '../components/Button';
 import TaskItem from '../components/TaskItem';
 import TaskModal from '../components/TaskModal';
+import ConfirmationModal from '../components/ConfirmationModal';
 import TaskFilters from '../components/TaskFilters';
 import './TaskList.css';
 import { deleteTask, getFilteredTasks, getTasks, updateTaskStatus } from '../utils/task';
@@ -46,6 +47,15 @@ function TaskList() {
 		lastName: '',
 		username: '',
 		email: ''
+	});
+	const [confirmationModal, setConfirmationModal] = useState<{
+		isOpen: boolean;
+		taskId: number | null;
+		taskTitle: string;
+	}>({
+		isOpen: false,
+		taskId: null,
+		taskTitle: ''
 	});
 	useEffect(() => {
 		const updateTaskStatuses = () => {
@@ -143,9 +153,32 @@ function TaskList() {
 
 	};
 
-	const handleDeleteTask = (taskId: number) => {
-		setTasks(prev => prev.filter(task => task.id !== taskId));
-		deleteTask(taskId)
+	const handleDeleteRequest = (taskId: number, taskTitle: string) => {
+		setConfirmationModal({
+			isOpen: true,
+			taskId,
+			taskTitle
+		});
+	};
+
+	const handleConfirmDelete = () => {
+		if (confirmationModal.taskId !== null) {
+			setTasks(prev => prev.filter(task => task.id !== confirmationModal.taskId));
+			deleteTask(confirmationModal.taskId);
+			setConfirmationModal({
+				isOpen: false,
+				taskId: null,
+				taskTitle: ''
+			});
+		}
+	};
+
+	const handleCancelDelete = () => {
+		setConfirmationModal({
+			isOpen: false,
+			taskId: null,
+			taskTitle: ''
+		});
 	};
 
 
@@ -198,7 +231,7 @@ function TaskList() {
 						<div className="tasks-list">
 							{filteredTasks.map(task => (
 								<TaskItem key={task.id} task={task} onToggleComplete={handleToggleComplete}
-									onDelete={handleDeleteTask} />
+									onDeleteRequest={handleDeleteRequest} />
 							))}
 						</div>
 					) : (
@@ -222,6 +255,17 @@ function TaskList() {
 			</div>
 			<TaskModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
 				onSubmit={handleAddTask}
+			/>
+
+			<ConfirmationModal
+				isOpen={confirmationModal.isOpen}
+				title="Delete Task"
+				message={`Are you sure you want to delete "${confirmationModal.taskTitle}"? This action cannot be undone.`}
+				confirmText="Delete"
+				cancelText="Cancel"
+				onConfirm={handleConfirmDelete}
+				onCancel={handleCancelDelete}
+				isDangerous={true}
 			/>
 		</div>
 	);

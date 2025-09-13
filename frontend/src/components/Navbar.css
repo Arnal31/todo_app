@@ -9,6 +9,13 @@
 
 .navbar-content {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.navbar-info {
+  display: flex;
   flex-direction: column;
   gap: 4px;
 }
@@ -24,4 +31,22 @@
   font-size: 14px;
   opacity: 0.9;
   font-weight: 400;
+}
+
+.settings-button {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  transition: background-color 0.2s ease;
+}
+
+.settings-button:hover {
+  background: rgba(255, 255, 255, 0.3);
 }

@@ -2,11 +2,13 @@ package main
 
 import (
 	"embed"
+	"log"
 	"todo/app"
 	app_config "todo/config/app"
 	"todo/repository"
 	"todo/service"
 	database "todo/storage"
+	"todo/utils"
 
 	"github.com/wailsapp/wails/v2"
 	"github.com/wailsapp/wails/v2/pkg/options"
@@ -29,9 +31,29 @@ func main() {
 		panic(err)
 	}
 	defer db.Close()
+
+	// Initialize PostgreSQL connection and repository safely
+	var postgresRepo repository.TaskRepository
+	var postgresService *service.Service
+	
+	if cfg.DB.IsValid() {
+		postgresDB, err := database.ConnectToDB(utils.DsnFromParams(cfg.DB.Host, cfg.DB.Port, cfg.DB.User, cfg.DB.Password, cfg.DB.Name, cfg.DB.SSLMode))
+		if err == nil {
+			defer postgresDB.Close()
+			postgresRepo = repository.NewPostgresTaskRepository(postgresDB)
+			log.Println("Successfully connected to PostgreSQL database")
+		} else {
+			log.Printf("Failed to connect to PostgreSQL: %v, using null repository", err)
+			postgresRepo = repository.NewNullTaskRepository()
+		}
+	} else {
+		log.Println("PostgreSQL configuration invalid or empty, using null repository")
+		postgresRepo = repository.NewNullTaskRepository()
+	}
+	postgresService = service.NewTaskService(postgresRepo)
 	localRepo := repository.NewLocalTaskRepository(db)
 	localService := service.NewTaskService(localRepo)
-	app := app.NewApp(cfg, localService)
+	app := app.NewApp(cfg, localService, postgresService)
 
 	// Create application with options
 	err = wails.Run(&options.App{
