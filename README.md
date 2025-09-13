@@ -4,7 +4,7 @@ A modern, cross-platform desktop todo application built with Wails (Go + React +
 
 ## Demo Video
 
-[DEMO](https://youtu.be/ruLLyBVLGMw)
+[DEMO](https://drive.google.com/file/d/1eHu1xRtmcuat2KlBgimXqNqla1fOTnvC/view?usp=sharing)
 
 ## Features
 
