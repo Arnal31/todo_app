@@ -6,6 +6,7 @@ type SQLiteConfig struct {
 	FilePath string `json:"file_path"`
 }
 
+// Returns the default SQLite configuraiton, creates necessary directories and files if they do not exist
 func DefaultSQLiteConfig() SQLiteConfig {
 	var defaultPath string
 	dir, err := os.UserConfigDir()

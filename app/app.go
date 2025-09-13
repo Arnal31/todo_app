@@ -13,6 +13,7 @@ import (
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
+// App structer
 type App struct {
 	Config              *app_config.Config
 	ctx                 context.Context
@@ -76,6 +77,7 @@ func (a *App) Greet() string {
 	return "Hello, World!"
 }
 
+// payloads for frontend and backend communication
 type DatabaseConnectionPayload struct {
 	Host     string `json:"host"`
 	Port     int    `json:"port"`
@@ -103,6 +105,15 @@ type PostgresConfigPayload struct {
 	SSLMode  string `json:"sslMode"`
 }
 
+type LocalStoragePayload struct {
+	ID       int    `json:"id"`
+	Title    string `json:"title"`
+	Deadline string `json:"deadline"`
+	Status   string `json:"status"`
+	Priority string `json:"priority"`
+	Created  string `json:"created_at"`
+}
+
 func (a *App) GetPostgresConfig() PostgresConfigPayload {
 	return PostgresConfigPayload{
 		Host:     a.Config.DB.Host,
@@ -114,6 +125,7 @@ func (a *App) GetPostgresConfig() PostgresConfigPayload {
 	}
 }
 
+// Postgres task methods
 func (a *App) GetPostgresTasks() ([]PostgresStoragePayload, error) {
 	log.Print("Fetching tasks from Postgres database")
 	tasks, err := a.PostgresService.GetTasks()
@@ -202,15 +214,7 @@ func (a *App) ConnectToDatabase(dbPayload DatabaseConnectionPayload) error {
 	return a.Config.SaveConfigToFile()
 }
 
-type LocalStoragePayload struct {
-	ID       int    `json:"id"`
-	Title    string `json:"title"`
-	Deadline string `json:"deadline"`
-	Status   string `json:"status"`
-	Priority string `json:"priority"`
-	Created  string `json:"created_at"`
-}
-
+// Local storage task methods
 func (a *App) SaveLocalTask(task LocalStoragePayload) (int, error) {
 	log.Println("Saving task to local storage:", task)
 	priority := utils.GetPriorityFromString(task.Status)

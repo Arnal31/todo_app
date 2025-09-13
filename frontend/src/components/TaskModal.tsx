@@ -30,7 +30,7 @@ function TaskModal({ isOpen, onClose, onSubmit }: TaskModalProps) {
 		console.log(formData);
 	};
 
-	const handleOverlayClick = (e: React.MouseEvent) => {
+	const handleOverlayClick = (e) => {
 		if (e.target === e.currentTarget) {
 			onClose();
 		}

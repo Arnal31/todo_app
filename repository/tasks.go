@@ -8,6 +8,7 @@ import (
 	database "todo/storage"
 )
 
+// TaskRepository defines the interface for task data operations
 type TaskRepository interface {
 	AddTask(task *models.Task) (*models.Task, error)
 	GetTasks() ([]models.Task, error)
@@ -16,10 +17,12 @@ type TaskRepository interface {
 	UpdateTaskStatus(id int, status string) error
 }
 
+// struct for local SQLite repository
 type LocalTaskRepository struct {
 	SQliteDB *database.LocalDB
 }
 
+// struct for Postgres repository
 type PostgresTaskRepository struct {
 	PostgresDB database.DBs
 }

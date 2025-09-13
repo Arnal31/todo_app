@@ -20,7 +20,7 @@ interface TaskPayload {
 	created_at: string;
 }
 
-async function isPostgresAvailable(): Promise<boolean> {
+async function isPostgresAvailable() {
 	try {
 		const config = await GetPostgresConfig();
 		return !!(config && config.host && config.dbName);
@@ -30,7 +30,7 @@ async function isPostgresAvailable(): Promise<boolean> {
 }
 
 
-export function getTaskStatusClass(task: Task): string {
+export function getTaskStatusClass(task: Task) {
 	switch (task.status) {
 		case 'Completed':
 			return 'task-completed';
@@ -41,7 +41,7 @@ export function getTaskStatusClass(task: Task): string {
 	}
 }
 
-export function getPriorityColor(task: Task): string {
+export function getPriorityColor(task: Task) {
 	switch (task.priority) {
 		case 'High':
 			return '#ff4757';
@@ -83,7 +83,7 @@ export function getFilteredTasks(tasks: Task[], filterBy: string, sortBy: string
 	return filtered;
 };
 
-export async function addTask(task: TaskPayload): Promise<number | void> {
+export async function addTask(task: TaskPayload) {
 	try {
 		await SaveLocalTask(task);
 		console.log("Task saved to local storage successfully.");
@@ -100,9 +100,9 @@ export async function addTask(task: TaskPayload): Promise<number | void> {
 	}
 }
 
-export async function getTasks(): Promise<TaskPayload[]> {
+// Fetch tasks from PostgreSQL if available, otherwise from local storage
+export async function getTasks() {
 	try {
-		// Check if PostgreSQL is available and prefer it
 		const postgresAvailable = await isPostgresAvailable();
 		if (postgresAvailable) {
 			try {
@@ -113,8 +113,7 @@ export async function getTasks(): Promise<TaskPayload[]> {
 				console.warn("Failed to fetch from PostgreSQL, falling back to local:", postgresError);
 			}
 		}
-
-		// Fall back to local storage
+		// local storage fallback
 		const localTasks = await GetLocalTasks();
 		console.log("Tasks fetched from local storage");
 		return localTasks || [];

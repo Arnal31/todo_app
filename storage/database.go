@@ -20,7 +20,6 @@ type DBs interface {
 }
 
 func ConnectToDB(dsn string) (*DB, error) {
-
 	conn, err := pgxpool.New(context.Background(), dsn)
 	if err != nil {
 		log.Println("Error connecting to database:", err)

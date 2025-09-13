@@ -1,10 +1,10 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button';
 import { getUserInfo } from '../utils/user';
 import './Home.css';
 
-const Home: React.FC = () => {
+function Home() {
 	const navigate = useNavigate();
 	const handleStartClick = () => {
 		navigate('/create_account');

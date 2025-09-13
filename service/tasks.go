@@ -6,6 +6,7 @@ import (
 	"todo/repository"
 )
 
+// TaskService defines the interface for task-related business logic
 type TaskService interface {
 	AddTask(title string, deadline string, priority int, status string, created string) (int, error)
 	GetTasks() ([]models.Task, error)
@@ -14,6 +15,7 @@ type TaskService interface {
 	UpdateTaskStatus(id int, status string) error
 }
 
+// Service struct implements TaskService interface
 type Service struct {
 	repository.TaskRepository
 }
