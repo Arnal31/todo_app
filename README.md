@@ -4,7 +4,7 @@ A modern, cross-platform desktop todo application built with Wails (Go + React +
 
 ## Demo Video
 
-*Coming soon - Demo video will be added here*
+[DEMO](https://youtu.be/ruLLyBVLGMw)
 
 ## Features
 
@@ -65,8 +65,8 @@ Full-featured PostgreSQL integration with connection management:
 
 
 **Advantages:**
-- ✅ Multi-device synchronization
-- ✅ Backup and recovery
+- Multi-device synchronization
+- Backup and recovery
 
 **Use Cases:**
 - Data backup requirements
@@ -153,12 +153,3 @@ Located in `config/app/config.go`:
 ### Storage Configuration
 - **Local**: Automatic setup, no configuration required
 - **PostgreSQL**: Configure via in-app settings or config files
-
-
-
-
-
-For support and questions:
-- Create an issue in the repository
-- Check the [Wails documentation](https://wails.io/docs/)
-- Review the project's test files for usage examples
