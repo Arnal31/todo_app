@@ -241,8 +241,14 @@ function TaskList() {
 							<div className="empty-icon">📝</div>
 							<h3>No tasks found</h3>
 							<p>
-								{filterBy === 'all'
+								{filterBy === 'all' 
 									? "Get started by adding your first task!"
+									: filterBy === 'today' 
+									? "No tasks are due today."
+									: filterBy === 'week'
+									? "No tasks are due this week."
+									: filterBy === 'overdue'
+									? "Great! You have no overdue tasks."
 									: `No ${filterBy.toLowerCase()} tasks available.`
 								}
 							</p>

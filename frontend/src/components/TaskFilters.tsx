@@ -17,14 +17,21 @@ function TaskFilters({
 	return (
 		<div className="task-filters">
 			<div className="filter-section">
-				<label htmlFor="filter-select">Filter by Status:</label>
+				<label htmlFor="filter-select">Filter by:</label>
 				<select id="filter-select" value={filterBy} onChange={(e) => onFilterChange(e.target.value as FilterBy)}
 					className="filter-select"
 				>
 					<option value="all">All Tasks</option>
-					<option value="Active">Active</option>
-					<option value="Completed">Completed</option>
-					<option value="Expired">Expired</option>
+					<optgroup label="By Status">
+						<option value="Active">Active</option>
+						<option value="Completed">Completed</option>
+						<option value="Expired">Expired</option>
+					</optgroup>
+					<optgroup label="By Time">
+						<option value="today">Due Today</option>
+						<option value="week">Due This Week</option>
+						<option value="overdue">Overdue</option>
+					</optgroup>
 				</select>
 			</div>
 

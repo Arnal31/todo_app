@@ -55,11 +55,66 @@ export function getPriorityColor(task: Task) {
 
 }
 
+// Helper functions for date-based filtering
+function isTaskToday(task: Task): boolean {
+	const today = new Date();
+	const taskDeadline = new Date(task.deadline);
+	return (
+		taskDeadline.getFullYear() === today.getFullYear() &&
+		taskDeadline.getMonth() === today.getMonth() &&
+		taskDeadline.getDate() === today.getDate()
+	);
+}
+
+function isTaskThisWeek(task: Task): boolean {
+	const today = new Date();
+	const weekStart = new Date(today);
+	weekStart.setDate(today.getDate() - today.getDay()); // Start of week (Sunday)
+	weekStart.setHours(0, 0, 0, 0);
+	
+	const weekEnd = new Date(weekStart);
+	weekEnd.setDate(weekStart.getDate() + 6); // End of week (Saturday)
+	weekEnd.setHours(23, 59, 59, 999);
+	
+	const taskDeadline = new Date(task.deadline);
+	return taskDeadline >= weekStart && taskDeadline <= weekEnd;
+}
+
+function isTaskOverdue(task: Task): boolean {
+	const today = new Date();
+	today.setHours(0, 0, 0, 0); // Start of today
+	const taskDeadline = new Date(task.deadline);
+	return taskDeadline < today && task.status !== 'Completed';
+}
+
 export function getFilteredTasks(tasks: Task[], filterBy: string, sortBy: string): Task[] {
 	let filtered = tasks;
-	if (filterBy !== 'all') {
-		filtered = filtered.filter(task => task.status === filterBy);
+	
+	// Apply filters
+	switch (filterBy) {
+		case 'all':
+			// No filtering needed
+			break;
+		case 'today':
+			filtered = filtered.filter(task => isTaskToday(task));
+			break;
+		case 'week':
+			filtered = filtered.filter(task => isTaskThisWeek(task));
+			break;
+		case 'overdue':
+			filtered = filtered.filter(task => isTaskOverdue(task));
+			break;
+		case 'Active':
+		case 'Completed':
+		case 'Expired':
+			filtered = filtered.filter(task => task.status === filterBy);
+			break;
+		default:
+			// Default to no filtering
+			break;
 	}
+	
+	// Sort the filtered results
 	filtered = [...filtered].sort((a, b) => {
 		switch (sortBy) {
 			case 'priority':
