@@ -227,5 +227,6 @@ func (r *LocalTaskRepository) AddTask(task *models.Task) (*models.Task, error) {
 		return nil, err
 	}
 	task.ID = int(id)
+	log.Println("Added task with ID:", task.ID)
 	return task, nil
 }
